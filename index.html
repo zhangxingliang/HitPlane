@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="game-content">
+    <canvas id="stage" width="450" height="800"></canvas>
+  </div>
+  <div class="control-bar">
+    <button onclick="gameStart()">重新开始</button>
+  </div>
+</body>
+<script src="./js/entity.js"></script>
+<script>
+
+// function between(val, max, min=0){
+//   return Math.min(Math.max(val, min), max)
+// }
+
+// function plane(src, ctx){
+//   this.height = 98
+//   this.width = 89
+//   this.el = document.createElement('img')
+//   this.el.setAttribute('src', src)
+//   this.x = 200
+//   this.y = 700
+//   this.move = function(x, y){
+//     this.x = between(x-45, 450, 0)
+//     this.y = between(y-50, 800, 0)
+//   }
+//   this.up = function(){
+//     this.y = between(this.y-20, 800, 0)
+//   }
+//   this.down = function(){
+//     this.y = between(this.y+20, 800, 0)
+//   }
+//   this.left = function(){
+//     this.x = between(this.x-20, 450, 0)
+//   }
+//   this.right = function(){
+//     this.x = between(this.x+20, 450, 0)
+//   }
+//   this.draw = function(ctx){
+//     ctx.drawImage(this.el, this.x, this.y, this.width, this.height)
+//   }
+// }
+//
+// function bullet(src){
+//   this.height = 11
+//   this.width = 4
+//   this.el = document.createElement('img')
+//   this.el.setAttribute('src', src)
+//   this.x = 0
+//   this.y = -1
+//   this.active = false
+//   var t = this
+//   this.move = function(){
+//     if(t.y>0){
+//       t.y -= 10
+//     }else{
+//       t.y = -1
+//       t.active = false
+//     }
+//   }
+//   this.emit = function(x, y){
+//     this.x = x + 45
+//     this.y = y - 5
+//     this.active = true
+//   }
+//   this.draw = function(ctx){
+//     ctx.drawImage(this.el, this.x, this.y, this.width, this.height)
+//   }
+// }
+//
+// function enemy(src){
+//   this.height = 43
+//   this.width = 61
+//   this.el = document.createElement('img')
+//   this.el.setAttribute('src', src)
+//   this.x = 450 * Math.random()
+//   this.y = -1
+//   this.active = false
+//   this.move = function(){
+//     if(this.y<800){
+//       this.y += 1
+//     }else{
+//       this.y = -100
+//       this.active = false
+//     }
+//   }
+//   this.lauch = function(x, y){
+//     this.x = 450 * Math.random()
+//     this.y = -100
+//     this.active = true
+//   }
+//   this.draw = function(ctx){
+//     ctx.drawImage(this.el, this.x, this.y, this.width, this.height)
+//   }
+// }
+//
+// function Game(el){
+//   if(!el){
+//     return
+//   }
+//   var ctx = el.getContext("2d");
+//   ctx.font="20px Georgia";
+//   var bg = document.createElement('img')
+//   bg.setAttribute('src', './source/back.jpg')
+//   bg.onload = function(){
+//     ctx.drawImage(bg,0,0,450,800)
+//   }
+//
+//   var offlineCanvas = document.createElement('canvas')
+//   offlineCanvas.width = 450
+//   offlineCanvas.height = 800
+//   offlineCtx = offlineCanvas.getContext("2d");
+//
+//   var bulletList = []
+//   bulletList.push(new bullet('./source/bullet.png'))
+//   bulletList.push(new bullet('./source/bullet.png'))
+//   bulletList.push(new bullet('./source/bullet.png'))
+//
+//
+//   var enemyList = []
+//   enemyList.push(new enemy('./source/enemy.png'))
+//   enemyList.push(new enemy('./source/enemy.png'))
+//   enemyList.push(new enemy('./source/enemy.png'))
+//   enemyList.push(new enemy('./source/enemy.png'))
+//   enemyList.push(new enemy('./source/enemy.png'))
+//
+//   var p = new plane('./source/plane.png')
+//   p.el.onload = function(){
+//     p.draw(offlineCtx)
+//     ctx.drawImage(offlineCanvas,0,0,450,800)
+//   }
+//   var score = 0
+//   this.start = function(){
+//     score = 0
+//     window.addEventListener("mousemove", function(event) {
+//       var keycode = event.keyCode;
+//       p.move(event.x, event.y)
+//       // if (keycode == 38) { //up
+//       //   p.up()
+//       // } else if (keycode == 40) { //down
+//       //   p.down()
+//       // } else if (keycode == 39) { //right
+//       //   p.right()
+//       // } else if (keycode == 37) { //left
+//       //   p.left()
+//       // }
+//     }, false)
+//     bulletList.forEach((item, index)=>{
+//       setTimeout(()=>item.emit(p.x, p.y), index*100)
+//     })
+//     enemyList.forEach((item, index)=>{
+//       setTimeout(()=>item.lauch(), index*100)
+//     })
+//     this.draw()
+//   }
+//   var t = this
+//   this.draw = function(){
+//     ctx.clearRect(0,0,450,800)
+//     ctx.drawImage(bg,0,0,450,800)
+//     offlineCtx.clearRect(0,0,450,800)
+//     bulletList.forEach((item, index)=>{
+//       enemyList.forEach((i, idx)=>{
+//           if(i.x<item.x&&i.x+i.width>item.x&&i.y<item.y&&i.y+i.height>item.y){
+//             i.active = item.active = false
+//             score++
+//             if(score>100){
+//               enemyList.push(new enemy('./source/enemy.png'))
+//               bulletList.push(new bullet('./source/bullet.png'))
+//               score = 0
+//             }
+//             return
+//           }
+//           if(i.x<p.x&&i.x+i.width>p.x&&i.y<p.y&&i.y+i.height>p.y){
+//           //死亡
+//           }
+//           i.active?(i.move(),i.draw(offlineCtx)):setTimeout(()=>i.lauch(), idx*100)
+//       })
+//       item.active?(item.move(),item.draw(offlineCtx)):setTimeout(()=>item.emit(p.x, p.y), index*100)
+//     })
+//     p.draw(offlineCtx)
+//     //ctx.fillText('score:'+score, 50, 50) 分数
+//     ctx.drawImage(offlineCanvas,0,0,450,800)
+//     requestAnimationFrame(t.draw)
+//   }
+// }
+
+var g = new Game(stage)
+function gameStart(){
+  g.start()
+}
+</script>
+</html>
